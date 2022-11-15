@@ -6,9 +6,12 @@ Do you want a simple SQL file executer? This is what we have. (Inspired by RedGa
 
 Keep it simple, keep it pretty.
 
-By Nick G.
 
 ## Commands
+
+> ### --help / -h
+> Show this text.
+
 > ### --version / -v
 > Shows the installed version of the code
 
