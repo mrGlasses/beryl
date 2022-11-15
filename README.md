@@ -86,7 +86,7 @@ For variables:
 > ### --rename id / -r id
 > Rename the selected project. (ID can be viewed in --showall)
 
-> ### --replace projectName / -rp projectName
+> ### --replace projectName projectLocation / -rp projectName projectLocation
 > Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS)
 
 > ### --delete projectName / -del projectName
