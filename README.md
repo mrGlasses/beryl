@@ -1,23 +1,25 @@
 # BedrockSQLHelper
 Do you want a simple SQL file executer? This is what we have.
 
-## --version / -v
-Show the intalled version of code.
+## Commands
+> ### --version / -v
+>Show the intalled version of code.
 
-## --showall / -sa
+> ### --showall / -sa
 
-## --show <projectName> / -s <projectName>
+> ### --show projectName / -s projectName
 
-## --verifyall / -va
+> ### --verifyall / -va
 
-## --verify <projectName> / -v <projectName>
+> ### --verify projectName / -v projectName
 
-## --addnew <projectName> <projectLocation> / -an <projectName> <projectLocation>
+> ### --addnew projectName projectLocation / -an projectName projectLocation
 
-## --addhere <projectName> / -ah <projectName>
+> ### --addhere projectName / -ah projectName
 
-## --updateall / -ua
+> ### --updateall / -ua
 
-## --update <projectName> / -u <projectName>
-
-### --force
+> ### --update projectName / -u projectName
+>
+>> #### --force
+>> 
