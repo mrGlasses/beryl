@@ -93,7 +93,7 @@ For variables:
 > Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)
 
 
-##Common questions
+## Common questions
 > Q.: **Why the name Beryl?**
 >> A.: https://en.wikipedia.org/wiki/Beryl#Etymology
 
