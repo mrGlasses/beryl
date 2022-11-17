@@ -30,6 +30,8 @@ You just need to:
 5. BSH now have a list of added and modified files and folders, it will just run those files (in alphabetical order as above).
 6. If everything were OK, you'll receive a success message.
 
+## Database Connection
+Since you've added the project to BSH, it will create a file called "connection.cnf" with a basic connection to localhost, use __--testconnection__ or __-tc__ to verify the conectivity.
 
 ## Have external variables?
 No problem, just add in the main folder a file named "var.bsh" with variable";"value inside it.
@@ -50,46 +52,49 @@ For variables:
 
 ## Commands
 
-> ### --help / -h
+> ### ___--help / -h____
 > Show this text.
 
-> ### --version / -v
+> ### ___--version / -v___
 > Shows the installed version of the code
 
-> ### --showall / -sa
+> ### ___--showall / -sa___
 > Shows all main folders for each project.
 
-> ### --show projectName / -s projectName
+> ### ___--show projectName / -s projectName___
 > Shows the data of the selected project.
 
-> ### --verifyall / -va
+> ### ___--verifyall / -va___
 > Verifies all projects and covered folders for updates.
 
-> ### --verify projectName / -v projectName
+> ### ___--verify projectName / -v projectName___
 > Verifies a specific project and covered folders for updates.
 
-> ### --addnew projectName projectLocation / -an projectName projectLocation
+> ### ___--addnew projectName projectLocation / -an projectName projectLocation___
 > Adds a new project and its folder to the app.
 
-> ### --addhere projectName / -ah projectName
+> ### ___--addhere projectName / -ah projectName___
 > Adds the current folder to the app.
 
-> ### --updateall / -ua
+> ### --updateall / -ua___
 > Updates all projects added to the app.
 
-> ### --update projectName / -u projectName
+> ### ___--update projectName / -u projectName___
 > Updates a specific project.
 > 
->> #### --force
+>> #### ___--force___
 >> (be careful) Re-run all files in all folders. 
 
-> ### --rename id / -r id
+> ### ___--testconnection / -tc___
+> test the connection with the server/database.
+
+> ### ___--rename id / -r id___
 > Rename the selected project. (ID can be viewed in --showall)
 
-> ### --replace projectName projectLocation / -rp projectName projectLocation
+> ### ___--replace projectName projectLocation / -rp projectName projectLocation___
 > Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS)
 
-> ### --delete projectName / -del projectName
+> ### ___--delete projectName / -del projectName___
 > Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)
 
 
