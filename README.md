@@ -3,6 +3,7 @@
 
 
 Do you want a simple SQL file executer? This is what we have. (Inspired by RedGate's [Flyway](https://flywaydb.org/))
+We do not create ghost tables like [gh-ost](https://github.com/github/gh-ost) or create versions of tables like [Skeema](https://www.skeema.io/)/[SkeeFree](https://github.com/github/gh-mysql-tools/tree/master/skeefree), we simply run scripts.
 
 Keep it simple, keep it pretty.
 
