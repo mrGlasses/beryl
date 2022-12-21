@@ -58,7 +58,7 @@ For variables:
 > Show this text.
 
 > ### ___--version / -v___
-> Shows the installed version of the code
+> Shows the installed version of the code.
 
 > ### ___--showall / -sa___
 > Shows all main folders for each project.
@@ -69,31 +69,31 @@ For variables:
 > ### ___--verifyall / -va___
 > Verifies all projects and covered folders for updates.
 
-> ### ___--verify projectName / -v projectName___
+> ### ___--verify projectName / -vr projectName___
 > Verifies a specific project and covered folders for updates.
 
-> ### ___--addnew projectName projectLocation / -an projectName projectLocation___
+> ### ___--addnew projectName --addnew projectLocation / -an projectName -an projectLocation___
 > Adds a new project and its folder to the app.
 
 > ### ___--addhere projectName / -ah projectName___
 > Adds the current folder to the app.
 
-> ### --updateall / -ua___
+> ### ___--updateall / -ua___
 > Updates all projects added to the app.
 
 > ### ___--update projectName / -u projectName___
 > Updates a specific project.
 > 
->> #### ___--force___
+>> #### ___--force / -f (only with --update)___
 >> (be careful) Re-run all files in all folders. 
 
-> ### ___--testconnection / -tc___
-> test the connection with the server/database.
+> ### ___--testconnection projectName / -tc projectName___
+> Test the connection with the server/database.
 
 > ### ___--rename id / -r id___
 > Rename the selected project. (ID can be viewed in --showall)
 
-> ### ___--replace projectName projectLocation / -rp projectName projectLocation___
+> ### ___--replace projectName --replace newProjectLocation / -rp projectName -rp newProjectLocation___
 > Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS)
 
 > ### ___--delete projectName / -del projectName___
