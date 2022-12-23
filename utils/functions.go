@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -9,16 +10,20 @@ import (
 )
 
 // SaveProjectFile saves the Project struct inside a json file.
-func SaveProjectFile(data []Project) {
+func SaveProjectFile(data []Project) error {
+	var result error = nil
+
 	jsonData, err := json.MarshalIndent(data, "", " ")
 	if err != nil {
-		log.Fatalf("could not convert struct data into json file: %v", err)
+		result = fmt.Errorf("could not convert struct data into json file: %v", err)
 	}
 
 	//Save Json Data  into a json file
 	if err = os.WriteFile("projects.json", jsonData, 0644); err != nil {
-		log.Fatalf("could not saveJSON file: %v", err)
+		result = fmt.Errorf("could not save JSON file: %v", err)
 	}
+
+	return result
 }
 
 // LoadProjectFile loads a json file inside the Project struct
@@ -66,12 +71,17 @@ func ListFilesInFolder(startPath string, newFile bool) ([]File, error) {
 			FilePath:         file,
 			LastModification: info.ModTime().Format(time.RFC1123),
 			Modified:         newFile,
-			Exists:           newFile,
-			NewFile:          newFile,
-			Excluded:         false,
+			// Exists:           newFile,
+			NewFile:  newFile,
+			Excluded: false,
 		}
 
 		list = append(list, fileItem)
 	}
 	return list, nil
 }
+
+// func SaveInTheProject(proj Project, projects []Project) {
+// 	idx := slices.IndexFunc(projects, func(c Project) bool { return c.ProjectName == proj.ProjectName })
+
+// }

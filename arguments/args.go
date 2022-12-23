@@ -1,7 +1,10 @@
 package arguments
 
 import (
+	"strings"
+
 	"github.com/akamensky/argparse"
+	"github.com/mrGlasses/BerylSQLHelper/functional"
 	"github.com/mrGlasses/BerylSQLHelper/utils"
 )
 
@@ -9,7 +12,7 @@ func ExecuteArguments(args []string) (string, error) {
 
 	// fmt.Println("YAYA")
 	// fmt.Println(args)
-	// args = append(args, "s", "-n", "Teste")
+	args = append(args, "vr", "-n", "Teste")
 	parser := argparse.NewParser(utils.CommandName, utils.ProgramDescription)
 
 	cmdVersion := parser.Flag("v", "version", &argparse.Options{Required: false, Help: "Shows the installed version of the code"})
@@ -19,9 +22,12 @@ func ExecuteArguments(args []string) (string, error) {
 	cmdShow := parser.NewCommand("s", "(Use: s -n projectName) Shows the data of the selected project")
 	getShow := cmdShow.String("n", "name", &argparse.Options{Required: true})
 
-	// cmdVerifyAll := parser.FlagCounter("va", "verifyall", &argparse.Options{Required: false, Help: "Verifies all projects and covered folders for updates"})
+	cmdVerifyAll := parser.NewCommand("va", "Verifies all projects and covered folders for updates - -e|--verbose as optional")
+	getVAVerbose := cmdVerifyAll.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	// cmdVerify := parser.String("vr", "verify", &argparse.Options{Required: false, Help: "(Use: -vr projectName) Verifies a specific project and covered folders for updates", Default: ""})
+	cmdVerify := parser.NewCommand("vr", "(Use: vr -n projectName) Verifies a specific project and covered folders for updates - -e|--verbose as optional")
+	getVerify := parser.String("n", "name", &argparse.Options{Required: true})
+	getVRVerbose := cmdVerify.Flag("e", "verbose", &argparse.Options{Required: false})
 
 	// cmdAddNew := parser.StringList("an", "addnew", &argparse.Options{Required: false, Help: "(Use: -an projectName -an projectLocation) Adds a new project and its folder to the app", Default: ""})
 
@@ -59,15 +65,24 @@ func ExecuteArguments(args []string) (string, error) {
 		// This can also be done by passing -h or --help flags
 		return parser.Usage(err), nil
 	}
+
 	switch {
 	case *cmdVersion:
 		return utils.ProgramName + " - " + utils.Version, nil
 
 	case cmdShowAll.Happened():
-		return "All", nil
+		return functional.ListProjectData("")
 
 	case cmdShow.Happened():
-		return *getShow, nil
+		return functional.ListProjectData(*getShow)
+
+	case cmdVerifyAll.Happened():
+		result, err := functional.VerifyProjects(*getVAVerbose)
+		return strings.Join(result, "\n "), err
+
+	case cmdVerify.Happened():
+		result, err := functional.VerifyAProject(*getVerify, *getVRVerbose)
+		return strings.Join(result, "\n "), err
 
 	case cmdAbout.Happened():
 		return utils.AboutText, nil
