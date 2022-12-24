@@ -1,18 +1,20 @@
 package arguments
 
 import (
+	"fmt"
+	"os"
 	"strings"
 
 	"github.com/akamensky/argparse"
-	"github.com/mrGlasses/BerylSQLHelper/functional"
-	"github.com/mrGlasses/BerylSQLHelper/utils"
+	"github.com/mrGlasses/beryl/functional"
+	"github.com/mrGlasses/beryl/utils"
 )
 
 func ExecuteArguments(args []string) (string, error) {
 
-	// fmt.Println("YAYA")
-	// fmt.Println(args)
-	args = append(args, "vr", "-n", "Teste")
+	// args = append(args, "sa") //test arguments
+	fmt.Println(args)
+
 	parser := argparse.NewParser(utils.CommandName, utils.ProgramDescription)
 
 	cmdVersion := parser.Flag("v", "version", &argparse.Options{Required: false, Help: "Shows the installed version of the code"})
@@ -26,12 +28,17 @@ func ExecuteArguments(args []string) (string, error) {
 	getVAVerbose := cmdVerifyAll.Flag("e", "verbose", &argparse.Options{Required: false})
 
 	cmdVerify := parser.NewCommand("vr", "(Use: vr -n projectName) Verifies a specific project and covered folders for updates - -e|--verbose as optional")
-	getVerify := parser.String("n", "name", &argparse.Options{Required: true})
+	getVerify := cmdVerify.String("n", "name", &argparse.Options{Required: true})
 	getVRVerbose := cmdVerify.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	// cmdAddNew := parser.StringList("an", "addnew", &argparse.Options{Required: false, Help: "(Use: -an projectName -an projectLocation) Adds a new project and its folder to the app", Default: ""})
+	cmdAddNew := parser.NewCommand("an", "(Use: an -n projectName -l projectLocation) Adds a new project and its folder to the app - -e|--verbose as optional")
+	getANName := cmdAddNew.String("n", "name", &argparse.Options{Required: true})
+	getANLocation := cmdAddNew.String("l", "location", &argparse.Options{Required: true})
+	getANVerbose := cmdAddNew.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	// cmdAddHere := parser.String("ah", "addhere", &argparse.Options{Required: false, Help: "(Use: -ah projectName) Adds the current folder to the app", Default: ""})
+	cmdAddHere := parser.NewCommand("ah", "(Use: ah -n projectName) Adds the current folder to the app")
+	getAHName := cmdAddHere.String("n", "name", &argparse.Options{Required: true})
+	getAHVerbose := cmdAddHere.Flag("e", "verbose", &argparse.Options{Required: false})
 
 	// cmdUpAll := parser.String("ua", "updateall", &argparse.Options{Required: false, Help: "Updates all projects added to the app", Default: ""})
 
@@ -51,6 +58,9 @@ func ExecuteArguments(args []string) (string, error) {
 
 	//forceps flags
 	switch {
+	case len(args) < 2:
+		return parser.Usage(parser), nil
+
 	case (args[1] == "-v") || (args[1] == "--version"):
 		return utils.ProgramName + " - " + utils.Version + "", nil
 
@@ -82,6 +92,18 @@ func ExecuteArguments(args []string) (string, error) {
 
 	case cmdVerify.Happened():
 		result, err := functional.VerifyAProject(*getVerify, *getVRVerbose)
+		return strings.Join(result, "\n "), err
+
+	case cmdAddNew.Happened():
+		result, err := functional.AddProject(*getANName, *getANLocation, *getANVerbose)
+		return strings.Join(result, "\n "), err
+
+	case cmdAddHere.Happened():
+		location, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+		result, err := functional.AddProject(*getAHName, location, *getAHVerbose)
 		return strings.Join(result, "\n "), err
 
 	case cmdAbout.Happened():

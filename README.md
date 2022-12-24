@@ -13,11 +13,11 @@ You have a project with a "db" folder (it doesn't need to be named "db" at all) 
 
 You just need to:
 1. Go to the db folder
-2. Write "berylsqlhelper --addhere projectName"
+2. Write "beryl ah -n projectName"
 3. Press Enter
 4. The app will load the folders and subfolders with the files
 5. A message will appear informing the number of folders and files added
-6. Write "berylsqlhelper --update projectName"
+6. Write "beryl --update projectName"
 7. Now the files will be executed in alphabetical order (ex.: 01-tables/001-table1.sql; 01-tables/002-table2.sql; 02-triggers/001-trigger1.sql).
 8. If everything were OK, you'll receive a success message.
 
@@ -25,10 +25,10 @@ You just need to:
 That's why we're here, Beryl SQL Helper (BSH) is a smart boi.
 
 You just need to:
-1. Write "berylsqlhelper --verify projectName"
+1. Write "beryl --verify projectName"
 2. Press Enter
 3. A message will appear informing the number of folders and files added and updated (BSH reads the last modification from the file).
-4. Write "berylsqlhelper --update projectName"
+4. Write "beryl --update projectName"
 5. BSH now have a list of added and modified files and folders, it will just run those files (in alphabetical order as above).
 6. If everything were OK, you'll receive a success message.
 

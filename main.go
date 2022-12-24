@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/mrGlasses/BerylSQLHelper/arguments"
+	"github.com/mrGlasses/beryl/arguments"
 )
 
 func main() {
@@ -14,5 +14,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Printf(result)
+	fmt.Println(result)
 }

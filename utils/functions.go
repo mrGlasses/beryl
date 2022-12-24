@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -19,31 +18,32 @@ func SaveProjectFile(data []Project) error {
 	}
 
 	//Save Json Data  into a json file
-	if err = os.WriteFile("projects.json", jsonData, 0644); err != nil {
+	homedir, _ := os.UserHomeDir()
+
+	if err = os.WriteFile(homedir+string(os.PathSeparator)+"projects.json", jsonData, 0644); err != nil {
 		result = fmt.Errorf("could not save JSON file: %v", err)
 	}
 
 	return result
 }
 
-// LoadProjectFile loads a json file inside the Project struct
+// LoadProjectFile loads a json file inside the Project struct.
 func LoadProjectFile() ([]Project, error) {
-	file, err := os.Open("projects.json")
+	homedir, _ := os.UserHomeDir()
+	file, err := os.ReadFile(homedir + string(os.PathSeparator) + "projects.json")
 	if err != nil {
 		return nil, err
 	}
 
-	defer file.Close()
-
-	jsonData := make([]byte, 1024)
-	_, err = file.Read(jsonData)
-	if err != nil {
-		return nil, err
-	}
+	// jsonData := make([]byte, 1024)
+	// _, err = file.Read(jsonData)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	var data []Project
 
-	err = json.Unmarshal(jsonData, &data)
+	err = json.Unmarshal(file, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -52,12 +52,17 @@ func LoadProjectFile() ([]Project, error) {
 
 }
 
-func ListFilesInFolder(startPath string, newFile bool) ([]File, error) {
+// ListFilesInFolder list all *.sql files in a given folder and subfolders
+// returning a slice of File(struct) and marking them as new or not using
+// the second parameter.
+func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]File, []string, error) {
 	var list []File
+	var speak []string
+
 	// Get a list of all files in the root folder and its subfolders.
 	files, err := filepath.Glob(startPath + "/**/*.sql")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Iterate through the list of files and print their names.
@@ -65,23 +70,31 @@ func ListFilesInFolder(startPath string, newFile bool) ([]File, error) {
 		// Get the file info.
 		info, err := os.Stat(file)
 		if err != nil {
-			log.Fatal(err)
+			return nil, nil, err
 		}
 		fileItem := File{
 			FilePath:         file,
 			LastModification: info.ModTime().Format(time.RFC1123),
-			Modified:         newFile,
-			// Exists:           newFile,
-			NewFile:  newFile,
-			Excluded: false,
+			Modified:         newPath,
+			NewFile:          newPath,
+			Excluded:         false,
+			// Exists:           newPath,
 		}
 
+		speak = append(speak, "File "+file+" added!")
 		list = append(list, fileItem)
 	}
-	return list, nil
+	return list, speak, nil
 }
 
-// func SaveInTheProject(proj Project, projects []Project) {
-// 	idx := slices.IndexFunc(projects, func(c Project) bool { return c.ProjectName == proj.ProjectName })
+// GetLastID gets the last ID from a project in a given slice of Project(struct).
+func GetLastID(projects []Project) int {
 
-// }
+	if len(projects) == 0 {
+		return 1
+	}
+
+	last := len(projects) - 1
+
+	return projects[last].Id
+}

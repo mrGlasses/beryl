@@ -1,4 +1,4 @@
-module github.com/mrGlasses/BerylSQLHelper
+module github.com/mrGlasses/beryl
 
 go 1.19
 

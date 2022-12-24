@@ -3,22 +3,23 @@ package functional
 import (
 	"errors"
 	"fmt"
+	"sort"
 
 	"github.com/ecoshub/stable"
-	"github.com/mrGlasses/BerylSQLHelper/utils"
+	"github.com/mrGlasses/beryl/utils"
 	"golang.org/x/exp/slices"
 )
 
-// ListProjectData shows a table with the projects (name == "") or the files of the project (name == any valid name)
+// ListProjectData shows a table with the projects (name == "") or the files of the project (name == any valid name).
 func ListProjectData(name string) (string, error) {
 	projects, err := utils.LoadProjectFile()
 	if err != nil {
 		return "", err
 	}
 
-	var table stable.STable
+	// var table *stable.STable
 	if name == "" {
-		table := stable.New("List of Projects")
+		table := stable.New("List of projects")
 		table.AddFields(
 			"ID", //TODO: Ajustar posição do ID (add with options)
 			"Name",
@@ -32,6 +33,7 @@ func ListProjectData(name string) (string, error) {
 				project.Folder,
 			)
 		}
+		return table.String(), nil
 	} else {
 		idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
 		if idx == -1 {
@@ -43,7 +45,6 @@ func ListProjectData(name string) (string, error) {
 			"File Path",
 			"Last Modification",
 			"Modified",
-			// "Exists",
 			"New File",
 			"Excluded",
 		)
@@ -55,16 +56,16 @@ func ListProjectData(name string) (string, error) {
 				line.FilePath,
 				line.LastModification,
 				line.Modified,
-				// line.Exists,
 				line.NewFile,
 				line.Excluded,
 			)
 		}
+		return table.String(), nil
 	}
-	return table.String(), nil
 }
 
-// VerifyAProject
+// VerifyAProject verifies a project files by his given name whenether
+// a file is modified, excluded or added.
 func VerifyAProject(name string, verbose bool) ([]string, error) {
 	var modifications utils.FileStatus
 	modifications.ProjectName = name
@@ -84,7 +85,7 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 	project := &projects[idx]
 	files := &project.Files
 
-	verifier, _ := utils.ListFilesInFolder(project.Folder, true)
+	verifier, _, _ := utils.ListFilesInFolder(project.Folder, true, false)
 
 	for _, file := range *files {
 		for _, fileV := range verifier {
@@ -129,6 +130,16 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 		}
 	}
 
+	//granting the files order
+	projectReorder := projects[idx]
+	filesReorder := projectReorder.Files
+	sort.Slice(filesReorder, func(i, j int) bool {
+		return filesReorder[i].FilePath < filesReorder[j].FilePath
+	},
+	)
+
+	files = &filesReorder
+
 	utils.SaveProjectFile(projects)
 
 	result = append(result, "")
@@ -137,6 +148,7 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 	return result, nil
 }
 
+// VerifyProjects verify all projects in the list of projects.json file.
 func VerifyProjects(verbose bool) ([]string, error) {
 	projects, err := utils.LoadProjectFile()
 	if err != nil {
@@ -153,5 +165,49 @@ func VerifyProjects(verbose bool) ([]string, error) {
 
 		result = append(result, text...)
 	}
+	return result, nil
+}
+
+func AddProject(name string, location string, verbose bool) ([]string, error) {
+	var result []string
+	var speak []string
+	var err error
+
+	projects, err := utils.LoadProjectFile()
+	if err != nil {
+		//it's the first one
+		if verbose {
+			result = append(result, "\n First project!\n")
+		}
+		err = nil
+	}
+	var project utils.Project
+
+	//project creation and file loading
+	project.Id = utils.GetLastID(projects)
+	project.ProjectName = name
+	project.Folder = location
+	project.Files, speak, err = utils.ListFilesInFolder(location, true, verbose)
+	if err != nil {
+		return nil, err
+	}
+
+	result = append(result, speak...)
+
+	if verbose {
+		result = append(result, "\n Files loaded.\n")
+	}
+	//add project to the slice
+	projects = append(projects, project)
+
+	//save project
+	err = utils.SaveProjectFile(projects)
+	if err != nil {
+		return nil, err
+	}
+	if verbose {
+		result = append(result, "\n Project "+name+" saved on projects file!\n")
+	}
+
 	return result, nil
 }
