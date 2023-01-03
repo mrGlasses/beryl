@@ -52,6 +52,12 @@ For variables:
 
     ${variable_name} - like ${database_name}
 
+We recommend putting an
+
+    USE YOURDATABASENAME;
+    
+as the start of the file as long as it is not a "CREATE DATABASE" file.    
+
 ## Commands
 
 > ### ___--help / -h____
