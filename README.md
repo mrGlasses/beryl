@@ -56,6 +56,10 @@ We recommend putting an
 
     USE YOURDATABASENAME;
     
+or (for PostgreSQL)
+
+    \c YOURDATABASENAME;
+
 as the start of the file as long as it is not a "CREATE DATABASE" file.    
 
 ## Commands
