@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mrGlasses/BerylSQLHelper/arguments"
-	"github.com/mrGlasses/BerylSQLHelper/utils"
+	"github.com/mrGlasses/beryl/arguments"
+	"github.com/mrGlasses/beryl/utils"
 )
 
 func TestExecuteArgumentsVersion(t *testing.T) {

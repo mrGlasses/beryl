@@ -10,10 +10,11 @@ type File struct {
 }
 
 type Project struct {
-	Id          int    `json:"id"`
-	ProjectName string `json:"project_name"`
-	Folder      string `json:"folder"`
-	Files       []File `json:"files"`
+	Id               int    `json:"id"`
+	ProjectName      string `json:"projectName"`
+	Folder           string `json:"folder"`
+	LastVerification string `json:"lastVerification"`
+	Files            []File `json:"files"`
 }
 
 type FileStatus struct {
@@ -21,4 +22,18 @@ type FileStatus struct {
 	Modified    int
 	New         int
 	Excluded    int
+}
+
+type ExternalVariables struct {
+	Old []byte
+	New []byte
+}
+
+type ConnString struct {
+	DbsName  string
+	User     string
+	Password string
+	Server   string
+	Database string
+	Port     string
 }

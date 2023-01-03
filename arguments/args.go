@@ -36,17 +36,21 @@ func ExecuteArguments(args []string) (string, error) {
 	getANLocation := cmdAddNew.String("l", "location", &argparse.Options{Required: true})
 	getANVerbose := cmdAddNew.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	cmdAddHere := parser.NewCommand("ah", "(Use: ah -n projectName) Adds the current folder to the app")
+	cmdAddHere := parser.NewCommand("ah", "(Use: ah -n projectName) Adds the current folder to the app - -e|--verbose as optional")
 	getAHName := cmdAddHere.String("n", "name", &argparse.Options{Required: true})
 	getAHVerbose := cmdAddHere.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	// cmdUpAll := parser.String("ua", "updateall", &argparse.Options{Required: false, Help: "Updates all projects added to the app", Default: ""})
+	cmdUpAll := parser.NewCommand("ua", "(Use: ua )Updates all projects added to the app - -e|--verbose as optional")
+	getUAVerbose := cmdUpAll.Flag("e", "verbose", &argparse.Options{Required: false})
+	getUAForce := cmdUpAll.Flag("f", "force", &argparse.Options{Required: false, Help: "(Use: [-u projectName|-ua] -f) Only works with -u and -ua command - (be careful) Re-run all files in all folders."})
 
-	// cmdVUpdate := parser.String("u", "update", &argparse.Options{Required: false, Help: "(Use: -u projectName) Updates a specific project", Default: ""})
+	cmdUpdate := parser.NewCommand("u", "(Use: u -n projectName) Updates a specific project - -e|--verbose as optional")
+	getUpdate := cmdUpdate.String("n", "name", &argparse.Options{Required: true})
+	getUVerbose := cmdUpdate.Flag("e", "verbose", &argparse.Options{Required: false})
+	getUForce := cmdUpdate.Flag("f", "force", &argparse.Options{Required: false, Help: "(Use: [-u projectName|-ua] -f) Only works with -u and -ua command - (be careful) Re-run all files in all folders."})
 
-	// cmdForce := parser.String("f", "force", &argparse.Options{Required: false, Help: "(Use: -u projectName -f) Only works with -u command - (be careful) Re-run all files in all folders.", Default: ""})
-
-	// cmdTest := parser.String("tc", "testconnection", &argparse.Options{Required: false, Help: "(Use: -tc projectName) Test the connection with the server/database", Default: ""})
+	cmdTest := parser.NewCommand("tc", "(Use: tc -n projectName) Test the connection with the server/database")
+	getTest := cmdTest.String("n", "name", &argparse.Options{Required: true})
 
 	// cmdRename := parser.Int("r", "rename", &argparse.Options{Required: false, Help: "(Use: -r id) Rename the selected project (ID can be viewed in --showall)", Default: ""})
 
@@ -104,6 +108,18 @@ func ExecuteArguments(args []string) (string, error) {
 			return "", err
 		}
 		result, err := functional.AddProject(*getAHName, location, *getAHVerbose)
+		return strings.Join(result, "\n "), err
+
+	case cmdUpAll.Happened():
+		result, err := functional.UpdateProjects(*getUAVerbose, *getUAForce)
+		return strings.Join(result, "\n "), err
+
+	case cmdUpdate.Happened():
+		result, err := functional.UpdateAProject(*getUpdate, *getUVerbose, *getUForce)
+		return strings.Join(result, "\n "), err
+
+	case cmdTest.Happened():
+		result, err := functional.TestAConnection(*getTest)
 		return strings.Join(result, "\n "), err
 
 	case cmdAbout.Happened():
