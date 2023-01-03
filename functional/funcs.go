@@ -249,7 +249,7 @@ func AddProject(name string, location string, verbose bool) ([]string, error) {
 // UpdateAProject updates a single project. By "update" I mean load all the project files
 // to the database selected, but just the marked with "new" or "modified" (but force variable make the flags be ignored).
 func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
-	var result []string //TODO: Make verbose
+	var result []string
 
 	// Lists the projects
 	projects, err := utils.LoadProjectFile()
@@ -262,6 +262,9 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 
 	project := &projects[idx]
 	files := &project.Files
+	if verbose {
+		result = append(result, "Project found.")
+	}
 
 	projectLastVerification, err := time.Parse(time.RFC1123, project.LastVerification)
 	if err != nil {
@@ -273,10 +276,18 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 			strconv.Itoa(utils.MaxTimeMinutesVerification) + " minutes)\n\n Please run beryl vr -n " + project.ProjectName)
 	}
 
+	if verbose {
+		result = append(result, "Time of last verification OK.")
+	}
+
 	// Gets connection string
 	connection, err := utils.ReadCNF(project.Folder + string(os.PathSeparator) + "c_" + project.ProjectName + ".cnf")
 	if err != nil {
 		return nil, err
+	}
+
+	if verbose {
+		result = append(result, "Connection string found.")
 	}
 
 	// Gets external variables
@@ -285,10 +296,18 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 		return nil, err
 	}
 
+	if verbose {
+		result = append(result, "Variables found.")
+	}
+
 	// Tests the connection
 	err = utils.TestConnection(connection)
 	if err != nil {
 		return nil, err
+	}
+
+	if verbose {
+		result = append(result, "Connection OK.")
 	}
 
 	// Sends the files
@@ -299,16 +318,28 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 		if file.Excluded {
 			//TODO: remove excluded files from struct
 			removeList = append(removeList, counter)
+
+			if verbose {
+				result = append(result, "File "+file.FilePath+" to remove list.")
+			}
 			continue
 		}
 
 		if !force && ((!file.Modified) || (!file.NewFile)) {
+
+			if verbose {
+				result = append(result, "File "+file.FilePath+" is not a new/modified file.")
+			}
 			continue
 		}
 
 		result, err = utils.SendCodeToDatabase(file.FilePath, variables, connection, verbose)
 		if err != nil {
 			return nil, err
+		}
+
+		if verbose {
+			result = append(result, "File "+file.FilePath+" sent to the database.")
 		}
 		file.Modified = false
 		file.NewFile = false
@@ -317,8 +348,17 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 	//TODO: save struct after all updates
 	for _, item := range removeList {
 		utils.RemoveItemFromFiles(*files, item)
+
+		if verbose {
+			result = append(result, "File in index "+strconv.Itoa(item)+" removed from project.")
+		}
 	}
+
 	utils.SaveProjectFile(projects)
+
+	if verbose {
+		result = append(result, "Project saved.")
+	}
 
 	result = append(result, "Project "+project.ProjectName+" updated!")
 

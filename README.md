@@ -17,7 +17,7 @@ You just need to:
 3. Press Enter
 4. The app will load the folders and subfolders with the files
 5. A message will appear informing the number of folders and files added
-6. Write "beryl --update projectName"
+6. Write "beryl u -n projectName"
 7. Now the files will be executed in alphabetical order (ex.: 01-tables/001-table1.sql; 01-tables/002-table2.sql; 02-triggers/001-trigger1.sql).
 8. If everything were OK, you'll receive a success message.
 
@@ -25,18 +25,18 @@ You just need to:
 That's why we're here, Beryl SQL Helper (BSH) is a smart boi.
 
 You just need to:
-1. Write "beryl --verify projectName"
+1. Write "beryl vr -n projectName"
 2. Press Enter
 3. A message will appear informing the number of folders and files added and updated (BSH reads the last modification from the file).
-4. Write "beryl --update projectName"
+4. Write "beryl u -n projectName"
 5. BSH now have a list of added and modified files and folders, it will just run those files (in alphabetical order as above).
 6. If everything were OK, you'll receive a success message.
 
 ## Database Connection
-Since you've added the project to BSH, it will create a file called "connection.cnf" with a basic connection to localhost, use __--testconnection__ or __-tc__ to verify the conectivity.
+Since you've added the project to BSH, it will create a file called "c_ProjectName_.cnf" with a basic connection to localhost, use __--testconnection__ or __-tc__ to verify the conectivity.
 
 ## Have external variables?
-No problem, just add in the main folder a file named "var.bsh" with variable";"value inside it.
+No problem, just add in the main folder a file named "ProjectName.bsh" with variable";"value inside it.
 
 Ex.:
 
@@ -60,7 +60,7 @@ For variables:
 > ### ___--version / -v___
 > Shows the installed version of the code.
 
-> ### ___--showall / -sa___
+> ### ___sa___
 > Shows all main folders for each project.
 
 > ### ___--show projectName / -s projectName___

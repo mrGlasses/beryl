@@ -21,35 +21,35 @@ func ExecuteArguments(args []string) (string, error) {
 
 	cmdShowAll := parser.NewCommand("sa", "Shows all main folders for each project")
 
-	cmdShow := parser.NewCommand("s", "(Use: s -n projectName) Shows the data of the selected project")
+	cmdShow := parser.NewCommand("s", "(Use: beryl s -n projectName) Shows the data of the selected project")
 	getShow := cmdShow.String("n", "name", &argparse.Options{Required: true})
 
 	cmdVerifyAll := parser.NewCommand("va", "Verifies all projects and covered folders for updates - -e|--verbose as optional")
 	getVAVerbose := cmdVerifyAll.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	cmdVerify := parser.NewCommand("vr", "(Use: vr -n projectName) Verifies a specific project and covered folders for updates - -e|--verbose as optional")
+	cmdVerify := parser.NewCommand("vr", "(Use: beryl vr -n projectName) Verifies a specific project and covered folders for updates - -e|--verbose as optional")
 	getVerify := cmdVerify.String("n", "name", &argparse.Options{Required: true})
 	getVRVerbose := cmdVerify.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	cmdAddNew := parser.NewCommand("an", "(Use: an -n projectName -l projectLocation) Adds a new project and its folder to the app - -e|--verbose as optional")
+	cmdAddNew := parser.NewCommand("an", "(Use: beryl an -n projectName -l projectLocation) Adds a new project and its folder to the app - -e|--verbose as optional")
 	getANName := cmdAddNew.String("n", "name", &argparse.Options{Required: true})
 	getANLocation := cmdAddNew.String("l", "location", &argparse.Options{Required: true})
 	getANVerbose := cmdAddNew.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	cmdAddHere := parser.NewCommand("ah", "(Use: ah -n projectName) Adds the current folder to the app - -e|--verbose as optional")
+	cmdAddHere := parser.NewCommand("ah", "(Use: beryl ah -n projectName) Adds the current folder to the app - -e|--verbose as optional")
 	getAHName := cmdAddHere.String("n", "name", &argparse.Options{Required: true})
 	getAHVerbose := cmdAddHere.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	cmdUpAll := parser.NewCommand("ua", "(Use: ua )Updates all projects added to the app - -e|--verbose as optional")
+	cmdUpAll := parser.NewCommand("ua", "(Use: beryl ua )Updates all projects added to the app - -e|--verbose as optional")
 	getUAVerbose := cmdUpAll.Flag("e", "verbose", &argparse.Options{Required: false})
 	getUAForce := cmdUpAll.Flag("f", "force", &argparse.Options{Required: false, Help: "(Use: [-u projectName|-ua] -f) Only works with -u and -ua command - (be careful) Re-run all files in all folders."})
 
-	cmdUpdate := parser.NewCommand("u", "(Use: u -n projectName) Updates a specific project - -e|--verbose as optional")
+	cmdUpdate := parser.NewCommand("u", "(Use: beryl u -n projectName) Updates a specific project - -e|--verbose as optional")
 	getUpdate := cmdUpdate.String("n", "name", &argparse.Options{Required: true})
 	getUVerbose := cmdUpdate.Flag("e", "verbose", &argparse.Options{Required: false})
 	getUForce := cmdUpdate.Flag("f", "force", &argparse.Options{Required: false, Help: "(Use: [-u projectName|-ua] -f) Only works with -u and -ua command - (be careful) Re-run all files in all folders."})
 
-	cmdTest := parser.NewCommand("tc", "(Use: tc -n projectName) Test the connection with the server/database")
+	cmdTest := parser.NewCommand("tc", "(Use: beryl tc -n projectName) Test the connection with the server/database")
 	getTest := cmdTest.String("n", "name", &argparse.Options{Required: true})
 
 	// cmdRename := parser.Int("r", "rename", &argparse.Options{Required: false, Help: "(Use: -r id) Rename the selected project (ID can be viewed in --showall)", Default: ""})
