@@ -52,11 +52,17 @@ func ExecuteArguments(args []string) (string, error) {
 	cmdTest := parser.NewCommand("tc", "(Use: beryl tc -n projectName) Test the connection with the server/database")
 	getTest := cmdTest.String("n", "name", &argparse.Options{Required: true})
 
-	// cmdRename := parser.Int("r", "rename", &argparse.Options{Required: false, Help: "(Use: -r id) Rename the selected project (ID can be viewed in --showall)", Default: ""})
+	cmdRename := parser.NewCommand("r", "(Use: beryl r -i id -n newProjecName) Rename the selected project (ID can be viewed in --showall)")
+	getId := cmdRename.Int("i", "id", &argparse.Options{Required: true})
+	getRename := cmdUpdate.String("n", "name", &argparse.Options{Required: true})
 
-	// cmdReplace := parser.String("rp", "replace", &argparse.Options{Required: false, Help: "(Use: -rp projectName -rp newProjectLocation) Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS)", Default: ""})
+	cmdReplace := parser.NewCommand("rp", "(Use: beryl rp -n projectName -nf newProjectLocation) Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS) - -e|--verbose as optional")
+	getReplace := cmdReplace.String("n", "name", &argparse.Options{Required: true})
+	getRPNewFolder := cmdReplace.String("nf", "newfolder", &argparse.Options{Required: true})
+	getRPVerbose := cmdReplace.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	// cmdDelete := parser.String("del", "delete", &argparse.Options{Required: false, Help: "(Use: -del projectName) Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)", Default: ""})
+	cmdDelete := parser.NewCommand("d", "(Use: beryl d -m projectName) Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)")
+	getDelete := cmdDelete.String("n", "name", &argparse.Options{Required: true})
 
 	cmdAbout := parser.NewCommand("about", `Shows the "About" text`)
 
@@ -120,6 +126,18 @@ func ExecuteArguments(args []string) (string, error) {
 
 	case cmdTest.Happened():
 		result, err := functional.TestAConnection(*getTest)
+		return strings.Join(result, "\n "), err
+
+	case cmdRename.Happened():
+		result, err := functional.RenameAProject(*getId, *getRename)
+		return strings.Join(result, "\n "), err
+
+	case cmdReplace.Happened():
+		result, err := functional.ReplaceAProject(*getReplace, *getRPNewFolder, *getRPVerbose)
+		return strings.Join(result, "\n "), err
+
+	case cmdDelete.Happened():
+		result, err := functional.DeleteAProject(*getDelete)
 		return strings.Join(result, "\n "), err
 
 	case cmdAbout.Happened():

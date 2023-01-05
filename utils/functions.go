@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -374,11 +375,97 @@ func RemoveItemFromFiles(slice []File, idx int) {
 	// return slice
 }
 
-// removeItemFromProjects remove a item from the []Project slice.
+// RemoveItemFromProjects remove a item from the []Project slice.
 func RemoveItemFromProjects(slice []Project, idx int) {
 	copy(slice[idx:], slice[idx+1:])
 	empty := new(Project)
 	slice[len(slice)-1] = *empty
 	slice = slice[:len(slice)-1]
 	// return slice
+}
+
+// RenameProject just recieve a project and change the ProjectName property for a new name.
+func RenameProject(project *Project, name string) {
+	project.ProjectName = name
+}
+
+// ReplaceProject just recieve a project and change the Folder property for a new folder.
+func ReplaceProject(project *Project, folder string) {
+	project.Folder = folder
+}
+
+// CopyFile - https://github.com/mactsouk/opensource.com/blob/master/cp3.go
+func CopyFile(src, dst string, BUFFERSIZE int64) error {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return fmt.Errorf("%s is not a regular file.", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	_, err = os.Stat(dst)
+	if err == nil {
+		return fmt.Errorf("File %s already exists.", dst)
+	}
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	if err != nil {
+		panic(err)
+	}
+
+	buf := make([]byte, BUFFERSIZE)
+	for {
+		n, err := source.Read(buf)
+		if err != nil && err != io.EOF {
+			return err
+		}
+		if n == 0 {
+			break
+		}
+
+		if _, err := destination.Write(buf[:n]); err != nil {
+			return err
+		}
+	}
+	return err
+}
+
+// Confirm - https://gist.github.com/r0l1/3dcbb0c8f6cfe9c66ab8008f55f8f28b?permalink_comment_id=1995588#gistcomment-1995588
+func Confirm(s string) bool {
+	r := bufio.NewReader(os.Stdin)
+
+	for {
+		fmt.Printf("%s [y/n]: ", s)
+
+		res, err := r.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Empty input (i.e. "\n")
+		if len(res) < 2 {
+			continue
+		}
+
+		// Wrong answer
+		result := strings.ToLower(strings.TrimSpace(res))[0]
+		if (result != 'y') && (result != 'n') {
+			continue
+		}
+
+		return result == 'y'
+	}
 }

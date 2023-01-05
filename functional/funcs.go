@@ -41,8 +41,8 @@ func ListProjectData(name string) (string, error) {
 		return table.String(), nil
 	} else {
 		idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
-		if idx == -1 {
-			return "", errors.New("project not found")
+		if idx != -1 {
+			return "", fmt.Errorf("Project %s not found.", name)
 		}
 
 		table := stable.New("Project: " + projects[idx].ProjectName)
@@ -88,6 +88,9 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
 
 	project := &projects[idx]
+	if idx != -1 {
+		return nil, fmt.Errorf("Project %s not found.", name)
+	}
 	files := &project.Files
 
 	verifier, _, _ := utils.ListFilesInFolder(project.Folder, true, false)
@@ -189,6 +192,12 @@ func AddProject(name string, location string, verbose bool) ([]string, error) {
 		}
 		err = nil
 	}
+
+	exists := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
+	if exists != -1 {
+		return nil, errors.New(fmt.Sprintf("The project with name %s already exists", name))
+	}
+
 	var project utils.Project
 
 	//project creation and file loading
@@ -261,6 +270,10 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
 
 	project := &projects[idx]
+	if idx != -1 {
+		return nil, fmt.Errorf("Project %s not found.", name)
+	}
+
 	files := &project.Files
 	if verbose {
 		result = append(result, "Project found.")
@@ -365,6 +378,7 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 	return result, nil
 }
 
+// UpdateProjects gets the list of all projects then update each one.
 func UpdateProjects(verbose bool, force bool) ([]string, error) {
 	projects, err := utils.LoadProjectFile()
 	if err != nil {
@@ -384,6 +398,7 @@ func UpdateProjects(verbose bool, force bool) ([]string, error) {
 	return result, nil
 }
 
+// Test the connection using the connection file (c_projectName.cnf) with the database.
 func TestAConnection(name string) ([]string, error) {
 	var result []string
 
@@ -397,6 +412,9 @@ func TestAConnection(name string) ([]string, error) {
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
 
 	project := &projects[idx]
+	if idx != -1 {
+		return nil, fmt.Errorf("Project %s not found.", name)
+	}
 
 	connection, err := utils.ReadCNF(project.Folder)
 	if err != nil {
@@ -409,6 +427,155 @@ func TestAConnection(name string) ([]string, error) {
 	}
 
 	result = append(result, "Connection with "+project.ProjectName+" worked!")
+
+	return result, nil
+}
+
+// Rename a project using the ID
+func RenameAProject(id int, newName string) ([]string, error) {
+	var result []string
+
+	// Lists the projects
+	projects, err := utils.LoadProjectFile()
+	if err != nil {
+		return nil, err
+	}
+
+	// Gets correct project
+	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.Id == id })
+
+	// Project found
+	if idx != -1 {
+		if !utils.Confirm(fmt.Sprintf("Are you sure you want to rename the project to %s?\n", newName)) {
+			return nil, errors.New("Rename cancelled by user.")
+		}
+	} else {
+		return nil, fmt.Errorf("Project id %d not found.", id)
+	}
+
+	project := &projects[idx]
+	
+	exists := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == newName })
+	if exists != -1 {
+		return nil, errors.New(fmt.Sprintf("The project with name %s already exists", newName))
+	}
+	
+	oldName := project.ProjectName
+
+	utils.RenameProject(project, newName)
+
+	// Renaming files
+	err = os.Rename(project.Folder+string(os.PathSeparator)+"c_"+oldName+".cnf", project.Folder+string(os.PathSeparator)+"c_"+project.ProjectName+".cnf")
+	if err != nil {
+		return nil, err
+	}
+
+	err = os.Rename(project.Folder+string(os.PathSeparator)+oldName+".bsh", project.Folder+string(os.PathSeparator)+project.ProjectName+".bsh")
+	if err != nil {
+		return nil, err
+	}
+
+	err = utils.SaveProjectFile(projects)
+	if err != nil {
+		return nil, err
+	}
+
+	result = append(result, "Project renamed!")
+
+	return result, nil
+}
+
+func ReplaceAProject(name string, newFolder string, verbose bool) ([]string, error) {
+	var result []string
+
+	// Lists the projects
+	projects, err := utils.LoadProjectFile()
+	if err != nil {
+		return nil, err
+	}
+
+	// Gets correct project
+	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
+
+	// Project found
+	if idx != -1 {
+		if !utils.Confirm(fmt.Sprintf("Are you sure you want to change the folder of the project to %s?\n", newFolder)) {
+			return nil, errors.New("Folder change cancelled by user.")
+		}
+	} else {
+		return nil, fmt.Errorf("Project %s not found.", name)
+	}
+	project := &projects[idx]
+
+	// oldFolder := project.Folder
+
+	utils.ReplaceProject(project, newFolder)
+
+	// Copy files - may be useless, because need to remap all files, but I'll let this here.
+
+	// err = utils.CopyFile(oldFolder+string(os.PathSeparator)+"c_"+project.ProjectName+".cnf",
+	// 	project.Folder+string(os.PathSeparator)+"c_"+project.ProjectName+".cnf",
+	// 	1000000)
+	// if err != nil {
+	// 	if err.Error() == fmt.Sprintf("File %s already exists.", project.Folder+string(os.PathSeparator)+"c_"+project.ProjectName+".cnf") {
+	// 		result = append(result, err.Error())
+	// 	} else {
+	// 		return nil, err
+	// 	}
+	// }
+
+	// err = utils.CopyFile(oldFolder+string(os.PathSeparator)+project.ProjectName+".bsh",
+	// 	project.Folder+string(os.PathSeparator)+project.ProjectName+".bsh",
+	// 	1000000)
+	// if err != nil {
+	// 	if err.Error() == fmt.Sprintf("File %s already exists.", project.Folder+string(os.PathSeparator)+project.ProjectName+".bsh") {
+	// 		result = append(result, err.Error())
+	// 	} else {
+	// 		return nil, err
+	// 	}
+	// }
+
+	// Re-verify all project
+	vResult, err := VerifyAProject(project.ProjectName, verbose)
+	if err != nil {
+		return nil, err
+	}
+	result = append(result, vResult...)
+
+	err = utils.SaveProjectFile(projects)
+	if err != nil {
+		return nil, err
+	}
+
+	result = append(result, "Project replaced!")
+
+	return result, nil
+}
+
+func DeleteAProject(name string) ([]string, error) {
+	var result []string
+
+	// Lists the projects
+	projects, err := utils.LoadProjectFile()
+	if err != nil {
+		return nil, err
+	}
+
+	// Gets correct project
+	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
+
+	// Project found
+	if idx != -1 {
+		if !utils.Confirm(fmt.Sprintf("Are you sure you want to delete the project called %s?\n", name)) {
+			return nil, errors.New("Folder change cancelled by user.")
+		}
+	} else {
+		return nil, fmt.Errorf("Project %s not found.", name)
+	}
+
+	utils.RemoveItemFromProjects(projects, idx)
+
+	utils.SaveProjectFile(projects)
 
 	return result, nil
 }
