@@ -12,7 +12,7 @@ import (
 
 func ExecuteArguments(args []string) (string, error) {
 
-	// args = append(args, "sa") //test arguments
+	// args = append(args, "d", "-n", "ENNBA") //test arguments
 	fmt.Println(args)
 
 	parser := argparse.NewParser(utils.CommandName, utils.ProgramDescription)
@@ -54,14 +54,14 @@ func ExecuteArguments(args []string) (string, error) {
 
 	cmdRename := parser.NewCommand("r", "(Use: beryl r -i id -n newProjecName) Rename the selected project (ID can be viewed in --showall)")
 	getId := cmdRename.Int("i", "id", &argparse.Options{Required: true})
-	getRename := cmdUpdate.String("n", "name", &argparse.Options{Required: true})
+	getRename := cmdRename.String("n", "name", &argparse.Options{Required: true})
 
-	cmdReplace := parser.NewCommand("rp", "(Use: beryl rp -n projectName -nf newProjectLocation) Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS) - -e|--verbose as optional")
+	cmdReplace := parser.NewCommand("rp", "(Use: beryl rp -n projectName -w newProjectLocation) Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS) - -e|--verbose as optional")
 	getReplace := cmdReplace.String("n", "name", &argparse.Options{Required: true})
-	getRPNewFolder := cmdReplace.String("nf", "newfolder", &argparse.Options{Required: true})
+	getRPNewFolder := cmdReplace.String("w", "newfolder", &argparse.Options{Required: true})
 	getRPVerbose := cmdReplace.Flag("e", "verbose", &argparse.Options{Required: false})
 
-	cmdDelete := parser.NewCommand("d", "(Use: beryl d -m projectName) Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)")
+	cmdDelete := parser.NewCommand("d", "(Use: beryl d -n projectName) Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)")
 	getDelete := cmdDelete.String("n", "name", &argparse.Options{Required: true})
 
 	cmdAbout := parser.NewCommand("about", `Shows the "About" text`)

@@ -8,6 +8,15 @@ We do not create ghost tables like [gh-ost](https://github.com/github/gh-ost) or
 
 Keep it simple, keep it pretty.
 
+## Installation
+1. Obviously install Go if you don't
+2. ~~Because of damned Oracle driver~~ Mainly you have to install GCC([Windows](https://code.visualstudio.com/docs/cpp/config-mingw) or Linux(apt-get install build-essential and sudo apt-get install pkg-config) then install [Oracle Instant Client and SDK](https://medium.com/@utranand/how-to-connect-golang-to-oracle-on-windows-64-bit-using-go-oci8-library-ab9ed0511b20) ([Alternative Link](https://web.archive.org/web/20230105062526/https://medium.com/@utranand/how-to-connect-golang-to-oracle-on-windows-64-bit-using-go-oci8-library-ab9ed0511b20)) - Yes, even it's in Thai, it's very useful, great job Puttipong Utranand
+3. Clone the repository with git
+4. go to the main folder and 
+
+        go install
+
+
 ## Functional Flux
 You have a project with a "db" folder (it doesn't need to be named "db" at all) that needs to be run.
 

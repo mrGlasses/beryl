@@ -1,7 +1,7 @@
 package utils
 
 const (
-	Version            = "0.0.1 - Alpha \n\n"
+	Version            = "0.0.2 - Alpha \n\n"
 	ProgramName        = "Beryl SQL Helper"
 	ProgramDescription = "Do you want a simple SQL file executer? This is what we have."
 	CommandName        = "beryl"

@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -41,6 +42,11 @@ func SaveProjectFile(data []Project) error {
 // LoadProjectFile loads a json file inside the Project struct.
 func LoadProjectFile() ([]Project, error) {
 	homedir, _ := os.UserHomeDir()
+	_, err := os.Stat(homedir + string(os.PathSeparator) + "projects.json")
+	if err != nil {
+		return nil, errors.New("no projects added")
+	}
+
 	file, err := os.ReadFile(homedir + string(os.PathSeparator) + "projects.json")
 	if err != nil {
 		return nil, err
@@ -287,7 +293,7 @@ func TestConnection(connection ConnString) error {
 	switch connection.DbsName {
 	case "mysql":
 		conString = connection.User + ":" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
-	case "ora":
+	case "ora": //BECAUSE OF THIS SHITHEAD YOU MUST INSTALL GCC AND OCI8
 		conString = connection.User + "/" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
 	case "mssql":
 		conString = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s", connection.Server+":"+connection.Port, connection.User, connection.Password, connection.Database)
@@ -296,6 +302,10 @@ func TestConnection(connection ConnString) error {
 	}
 
 	db, err := sql.Open(connection.DbsName, conString)
+	if err != nil {
+		return err
+	}
+
 	defer db.Close()
 	return err
 }
@@ -367,21 +377,21 @@ func WriteSampleBSH(filePath string, projectName string) error {
 }
 
 // removeItemFromFiles remove a item from the []File slice.
-func RemoveItemFromFiles(slice []File, idx int) {
+func RemoveItemFromFiles(slice []File, idx int) []File {
 	copy(slice[idx:], slice[idx+1:])
 	empty := new(File)
 	slice[len(slice)-1] = *empty
 	slice = slice[:len(slice)-1]
-	// return slice
+	return slice
 }
 
 // RemoveItemFromProjects remove a item from the []Project slice.
-func RemoveItemFromProjects(slice []Project, idx int) {
+func RemoveItemFromProjects(slice []Project, idx int) []Project {
 	copy(slice[idx:], slice[idx+1:])
 	empty := new(Project)
 	slice[len(slice)-1] = *empty
 	slice = slice[:len(slice)-1]
-	// return slice
+	return slice
 }
 
 // RenameProject just recieve a project and change the ProjectName property for a new name.
@@ -402,7 +412,7 @@ func CopyFile(src, dst string, BUFFERSIZE int64) error {
 	}
 
 	if !sourceFileStat.Mode().IsRegular() {
-		return fmt.Errorf("%s is not a regular file.", src)
+		return fmt.Errorf("%s is not a regular file", src)
 	}
 
 	source, err := os.Open(src)
@@ -413,7 +423,7 @@ func CopyFile(src, dst string, BUFFERSIZE int64) error {
 
 	_, err = os.Stat(dst)
 	if err == nil {
-		return fmt.Errorf("File %s already exists.", dst)
+		return fmt.Errorf("file %s already exists", dst)
 	}
 
 	destination, err := os.Create(dst)

@@ -15,9 +15,9 @@ require (
 )
 
 require (
-	github.com/akamensky/argparse v1.4.0 // indirect
+	github.com/akamensky/argparse v1.4.0
 	github.com/denisenkom/go-mssqldb v0.12.3
-	github.com/ecoshub/stable v1.0.3 // indirect
+	github.com/ecoshub/stable v1.0.3 
 	github.com/lib/pq v1.10.7
 	golang.org/x/sync v0.1.0 // indirect
 )
