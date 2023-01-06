@@ -422,7 +422,7 @@ func TestAConnection(name string) ([]string, error) {
 
 	project := &projects[idx]
 
-	connection, err := utils.ReadCNF(project.Folder)
+	connection, err := utils.ReadCNF(project.Folder+string(os.PathSeparator)+"c_"+project.ProjectName+".cnf")
 	if err != nil {
 		return nil, err
 	}
