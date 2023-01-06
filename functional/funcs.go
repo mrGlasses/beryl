@@ -86,11 +86,11 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 	}
 
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
-
-	project := &projects[idx]
 	if idx == -1 {
 		return nil, fmt.Errorf("project %s not found", name)
 	}
+
+	project := &projects[idx]
 	files := &project.Files
 
 	verifier, _, _ := utils.ListFilesInFolder(project.Folder, true, false)
@@ -416,11 +416,11 @@ func TestAConnection(name string) ([]string, error) {
 
 	// Gets correct project
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
-
-	project := &projects[idx]
 	if idx == -1 {
 		return nil, fmt.Errorf("project %s not found", name)
 	}
+
+	project := &projects[idx]
 
 	connection, err := utils.ReadCNF(project.Folder)
 	if err != nil {
