@@ -41,7 +41,7 @@ func ListProjectData(name string) (string, error) {
 		return table.String(), nil
 	} else {
 		idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
-		if idx != -1 {
+		if idx == -1 {
 			return "", fmt.Errorf("project %s not found", name)
 		}
 
@@ -88,14 +88,15 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
 
 	project := &projects[idx]
-	if idx != -1 {
+	if idx == -1 {
 		return nil, fmt.Errorf("project %s not found", name)
 	}
 	files := &project.Files
 
 	verifier, _, _ := utils.ListFilesInFolder(project.Folder, true, false)
+	exists := false
 
-	for _, file := range *files {
+	for _, file := range project.Files {
 		for _, fileV := range verifier {
 			// Exists
 			if file.FilePath == fileV.FilePath {
@@ -108,9 +109,14 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 					file.Modified = true
 					modifications.Modified += 1
 				}
-				continue
+				exists = true
+				break
 			}
 		}
+		if exists {
+			continue
+		}
+
 		if verbose {
 			result = append(result, "EXCLUDED: "+file.FilePath)
 		}
@@ -268,7 +274,7 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 
 	// Gets correct project
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
-	if idx != -1 {
+	if idx == -1 {
 		return nil, fmt.Errorf("project %s not found", name)
 	}
 
@@ -412,7 +418,7 @@ func TestAConnection(name string) ([]string, error) {
 	idx := slices.IndexFunc(projects, func(c utils.Project) bool { return c.ProjectName == name })
 
 	project := &projects[idx]
-	if idx != -1 {
+	if idx == -1 {
 		return nil, fmt.Errorf("project %s not found", name)
 	}
 

@@ -65,8 +65,8 @@ func LoadProjectFile() ([]Project, error) {
 // ListFilesInFolder list all *.sql files in a given folder and subfolders
 // returning a slice of File(struct) and marking them as new or not using
 // the second parameter.
-func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]File, []string, error) {
-	var list []File
+func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]*File, []string, error) {
+	var list []*File
 	var speak []string
 
 	// Get a list of all files in the root folder and its subfolders.
@@ -93,7 +93,7 @@ func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]File, []
 		if verbose {
 			speak = append(speak, "File "+file+" added!")
 		}
-		list = append(list, fileItem)
+		list = append(list, &fileItem)
 	}
 	return list, speak, nil
 }
@@ -377,10 +377,10 @@ func WriteSampleBSH(filePath string, projectName string) error {
 }
 
 // removeItemFromFiles remove a item from the []File slice.
-func RemoveItemFromFiles(slice []File, idx int) []File {
+func RemoveItemFromFiles(slice []*File, idx int) []*File {
 	copy(slice[idx:], slice[idx+1:])
 	empty := new(File)
-	slice[len(slice)-1] = *empty
+	slice[len(slice)-1] = empty
 	slice = slice[:len(slice)-1]
 	return slice
 }

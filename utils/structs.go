@@ -14,7 +14,7 @@ type Project struct {
 	ProjectName      string `json:"projectName"`
 	Folder           string `json:"folder"`
 	LastVerification string `json:"lastVerification"`
-	Files            []File `json:"files"`
+	Files            []*File `json:"files"`
 }
 
 type FileStatus struct {
