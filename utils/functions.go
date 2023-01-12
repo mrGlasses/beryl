@@ -70,31 +70,60 @@ func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]*File, [
 	var speak []string
 
 	// Get a list of all files in the root folder and its subfolders.
-	files, err := filepath.Glob(startPath + string(os.PathSeparator) + "**" + string(os.PathSeparator) + "*.sql")
-	if err != nil {
-		return nil, nil, err
-	}
+	// folderSearch := startPath + string(os.PathSeparator) + "**" + string(os.PathSeparator) + "*.sql"
+	
+	// files, err := filepath.Glob(folderSearch)
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
+
+	// Get a list of all files in the root folder and its subfolders.
+	err := filepath.Walk(startPath, func(path string, info os.FileInfo, err error) error {
+        if err != nil {
+            return err
+        }
+        if !info.IsDir() && filepath.Ext(path) == ".sql" {
+			fileItem := File{
+				FilePath:         path,
+				LastModification: info.ModTime().Format(time.RFC1123),
+				Modified:         newPath,
+				NewFile:          newPath,
+				Excluded:         false,
+				// Exists:           newPath,
+			}
+			if verbose {
+				speak = append(speak, "File "+path+" added!")
+			}
+			list = append(list, &fileItem)
+        }
+        return nil
+    })
+
+    if err != nil {
+        return nil, nil, err
+    }
+
 
 	// Iterate through the list of files and print their names.
-	for _, file := range files {
-		// Get the file info.
-		info, err := os.Stat(file)
-		if err != nil {
-			return nil, nil, err
-		}
-		fileItem := File{
-			FilePath:         file,
-			LastModification: info.ModTime().Format(time.RFC1123),
-			Modified:         newPath,
-			NewFile:          newPath,
-			Excluded:         false,
-			// Exists:           newPath,
-		}
-		if verbose {
-			speak = append(speak, "File "+file+" added!")
-		}
-		list = append(list, &fileItem)
-	}
+	// for _, file := range files {
+	// 	// Get the file info.
+	// 	info, err := os.Stat(file)
+	// 	if err != nil {
+	// 		return nil, nil, err
+	// 	}
+	// 	fileItem := File{
+	// 		FilePath:         file,
+	// 		LastModification: info.ModTime().Format(time.RFC1123),
+	// 		Modified:         newPath,
+	// 		NewFile:          newPath,
+	// 		Excluded:         false,
+	// 		// Exists:           newPath,
+	// 	}
+	// 	if verbose {
+	// 		speak = append(speak, "File "+file+" added!")
+	// 	}
+	// 	list = append(list, &fileItem)
+	// }
 	return list, speak, nil
 }
 
@@ -292,7 +321,7 @@ func TestConnection(connection ConnString) error {
 
 	switch connection.DbsName {
 	case "mysql":
-		conString = connection.User + ":" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
+		conString = connection.User + ":" + connection.Password + "@tcp(" + connection.Server + ":" + connection.Port + ")/" + connection.Database
 	case "ora": //BECAUSE OF THIS SHITHEAD YOU MUST INSTALL GCC AND OCI8
 		conString = connection.User + "/" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
 	case "mssql":

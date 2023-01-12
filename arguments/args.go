@@ -12,8 +12,8 @@ import (
 
 func ExecuteArguments(args []string) (string, error) {
 
-	// args = append(args, "tc", "-n", "ENNBA" ) //debug arguments
-	// fmt.Println(args)
+	// args = append(args, "u", "-n", "ENNBA","-e") //debug arguments
+	fmt.Println(args)
 
 	parser := argparse.NewParser(utils.CommandName, utils.ProgramDescription)
 

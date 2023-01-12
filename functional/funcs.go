@@ -3,6 +3,7 @@ package functional
 import (
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"sort"
 	"strconv"
@@ -93,7 +94,7 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 	project := &projects[idx]
 	files := &project.Files
 
-	verifier, _, _ := utils.ListFilesInFolder(project.Folder, true, false)
+	verifier, _, _ := utils.ListFilesInFolder(project.Folder, true, verbose)
 	exists := false
 
 	for _, file := range project.Files {
@@ -114,6 +115,7 @@ func VerifyAProject(name string, verbose bool) ([]string, error) {
 			}
 		}
 		if exists {
+			exists = false
 			continue
 		}
 
@@ -174,12 +176,14 @@ func VerifyProjects(verbose bool) ([]string, error) {
 	var result []string = nil
 
 	for _, project := range projects {
+		result = append(result, "\n##### PROJECT: "+project.ProjectName)
 		text, err := VerifyAProject(project.ProjectName, verbose)
 		if err != nil {
 			return nil, err
 		}
 
 		result = append(result, text...)
+		result = append(result, "____________________________________________\n")
 	}
 	return result, nil
 }
@@ -207,7 +211,7 @@ func AddProject(name string, location string, verbose bool) ([]string, error) {
 	var project utils.Project
 
 	//project creation and file loading
-	project.Id = utils.GetLastID(projects)
+	project.Id = utils.GetLastID(projects) + 1
 	project.ProjectName = name
 	project.Folder = location
 	project.LastVerification = time.Now().Format(time.RFC1123)
@@ -290,7 +294,7 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 		return nil, err
 	}
 
-	if time.Until(projectLastVerification).Minutes() >= utils.MaxTimeMinutesVerification {
+	if math.Abs(time.Until(projectLastVerification).Minutes()) >= utils.MaxTimeMinutesVerification {
 		return nil, errors.New("the last verification of the project is greater than the max time of verification (" +
 			strconv.Itoa(utils.MaxTimeMinutesVerification) + " minutes)\n\n Please run beryl vr -n " + project.ProjectName)
 	}
@@ -386,7 +390,7 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 
 // UpdateProjects gets the list of all projects then update each one.
 func UpdateProjects(verbose bool, force bool) ([]string, error) {
-	projects, err := utils.LoadProjectFile()
+	projects, err := utils.LoadProjectFile() 
 	if err != nil {
 		return nil, err
 	}
@@ -394,12 +398,14 @@ func UpdateProjects(verbose bool, force bool) ([]string, error) {
 	var result []string = nil
 
 	for _, project := range projects {
+		result = append(result, "\n##### PROJECT: "+project.ProjectName)
 		text, err := UpdateAProject(project.ProjectName, verbose, force)
 		if err != nil {
 			return nil, err
 		}
 
 		result = append(result, text...)
+		result = append(result, "____________________________________________\n")
 	}
 	return result, nil
 }
@@ -422,7 +428,7 @@ func TestAConnection(name string) ([]string, error) {
 
 	project := &projects[idx]
 
-	connection, err := utils.ReadCNF(project.Folder+string(os.PathSeparator)+"c_"+project.ProjectName+".cnf")
+	connection, err := utils.ReadCNF(project.Folder + string(os.PathSeparator) + "c_" + project.ProjectName + ".cnf")
 	if err != nil {
 		return nil, err
 	}
@@ -584,6 +590,7 @@ func DeleteAProject(name string) ([]string, error) {
 	projects = utils.RemoveItemFromProjects(projects, idx)
 
 	utils.SaveProjectFile(projects)
+	result = append(result, "Project deleted!")
 
 	return result, nil
 }
