@@ -127,7 +127,7 @@ as the start of the file as long as it is not a "CREATE DATABASE" file.
 >> A.: The app just mirrors the db errors, an error file was created in the main folder.
 
 > Q.: **In what databases BSH can be used?**
->> A.: MariaDB and MySQL (basically MySQL adapter) - in a close future, OracleDB.
+>> A.: MariaDB and MySQL (basically MySQL adapter) - OracleDB and MSSQL Server still not tested.
 
 > Q.: **Can I use it in my job/college work/company?**
 >> A.: For sure, just spread the name of Beryl SQL Helper (Give us credit please).
