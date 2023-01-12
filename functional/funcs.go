@@ -360,10 +360,12 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 			result = append(result, "Preparing file "+file.FilePath+" for send to the database...")
 		}
 
-		result, err = utils.SendCodeToDatabase(file.FilePath, variables, connection, verbose)
+		resultFile, err := utils.SendCodeToDatabase(file.FilePath, variables, connection, verbose)
 		if err != nil {
 			return nil, err
-		}
+		}		
+		result = append(result, resultFile...)
+		
 		file.Modified = false
 		file.NewFile = false
 	}
