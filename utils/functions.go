@@ -272,7 +272,7 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 	// Select the connection
 	switch connection.DbsName {
 	case "mysql":
-		conString = connection.User + ":" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
+		conString = connection.User + ":" + connection.Password + "@tcp(" + connection.Server + ":" + connection.Port + ")/" + connection.Database
 	case "ora":
 		conString = connection.User + "/" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
 	case "mssql":
@@ -283,18 +283,18 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 
 	db, err := sql.Open(connection.DbsName, conString)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(filePath+ ": "+ err.Error())
 	}
 	defer db.Close()
 
 	// Read the SQL file into a slice of bytes
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(filePath+ ": "+ err.Error())
 	}
 
 	if verbose {
-		result = append(result, "")
+		result = append(result, "File read.")
 	}
 
 	// Replacing variables
@@ -303,13 +303,13 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 	}
 
 	if verbose {
-		result = append(result, "")
+		result = append(result, "Variables replaced.")
 	}
 
 	// Execute the commands in the SQL file
 	_, err = db.Exec(string(data))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(filePath+ ": "+ err.Error())
 	}
 	result = append(result, "File "+filePath+" was executed successfully!")
 	return result, nil

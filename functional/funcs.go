@@ -356,13 +356,13 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 			continue
 		}
 
+		if verbose {
+			result = append(result, "Preparing file "+file.FilePath+" for send to the database...")
+		}
+
 		result, err = utils.SendCodeToDatabase(file.FilePath, variables, connection, verbose)
 		if err != nil {
 			return nil, err
-		}
-
-		if verbose {
-			result = append(result, "File "+file.FilePath+" sent to the database.")
 		}
 		file.Modified = false
 		file.NewFile = false
@@ -390,7 +390,7 @@ func UpdateAProject(name string, verbose bool, force bool) ([]string, error) {
 
 // UpdateProjects gets the list of all projects then update each one.
 func UpdateProjects(verbose bool, force bool) ([]string, error) {
-	projects, err := utils.LoadProjectFile() 
+	projects, err := utils.LoadProjectFile()
 	if err != nil {
 		return nil, err
 	}
