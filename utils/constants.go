@@ -9,7 +9,7 @@ const (
 		" \n\nUsing:\n GoLang (go.dev)\n" +
 		" argparse (github.com/akamensky/argparse)\n" +
 		" stable (github.com/ecoshub/stable)\n" +
-		" copy (https://github.com/mactsouk/opensource.com/blob/master/cp3.go)\n\n" +
+		" copy (https://github.com/mactsouk/opensource.com/blob/master/cp3.go)\n" +
 		" confirm (https://gist.github.com/r0l1/3dcbb0c8f6cfe9c66ab8008f55f8f28b?permalink_comment_id=1995588#gistcomment-1995588)\n\n"
 	CnfSampleLn1               = "driver=mysql/ora/mssql/postgres\n"
 	CnfSampleLn2               = "host=127.0.0.1\n"
