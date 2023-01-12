@@ -1,7 +1,7 @@
 package arguments
 
 import (
-	"fmt"
+	// "fmt"
 	"os"
 	"strings"
 
@@ -13,7 +13,7 @@ import (
 func ExecuteArguments(args []string) (string, error) {
 
 	// args = append(args, "u", "-n", "ENNBA","-e") //debug arguments
-	fmt.Println(args)
+	// fmt.Println(args)
 
 	parser := argparse.NewParser(utils.CommandName, utils.ProgramDescription)
 
