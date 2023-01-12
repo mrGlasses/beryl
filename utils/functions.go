@@ -272,7 +272,7 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 	// Select the connection
 	switch connection.DbsName {
 	case "mysql":
-		conString = connection.User + ":" + connection.Password + "@tcp(" + connection.Server + ":" + connection.Port + ")/" + connection.Database
+		conString = connection.User + ":" + connection.Password + "@tcp(" + connection.Server + ":" + connection.Port + ")/" + connection.Database+ "?multiStatements=true"
 	case "ora":
 		conString = connection.User + "/" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
 	case "mssql":
