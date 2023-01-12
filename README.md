@@ -42,7 +42,7 @@ You just need to:
 6. If everything were OK, you'll receive a success message.
 
 ## Database Connection
-Since you've added the project to BSH, it will create a file called "c_ProjectName_.cnf" with a basic connection to localhost, use __--testconnection__ or __-tc__ to verify the conectivity.
+Since you've added the project to BSH, it will create a file called "c_ProjectName_.cnf" with a basic connection to localhost, use __beryl tc -n projectName__ to verify the conectivity.
 
 ## Have external variables?
 No problem, just add in the main folder a file named "ProjectName.bsh" with variable";"value inside it.
