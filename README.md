@@ -82,40 +82,40 @@ as the start of the file as long as it is not a "CREATE DATABASE" file.
 > ### ___sa___
 > Shows all main folders for each project.
 
-> ### ___--show projectName / -s projectName___
+> ### ___s -n projectName___
 > Shows the data of the selected project.
 
-> ### ___--verifyall / -va___
+> ### ___va___
 > Verifies all projects and covered folders for updates.
 
-> ### ___--verify projectName / -vr projectName___
+> ### ___vr -n projectName___
 > Verifies a specific project and covered folders for updates.
 
-> ### ___--addnew projectName --addnew projectLocation / -an projectName -an projectLocation___
+> ### ___an -n projectName -l projectLocation___
 > Adds a new project and its folder to the app.
 
-> ### ___--addhere projectName / -ah projectName___
+> ### ___ah -n projectName___
 > Adds the current folder to the app.
 
-> ### ___--updateall / -ua___
+> ### ___ua___
 > Updates all projects added to the app.
 
-> ### ___--update projectName / -u projectName___
+> ### ___u -n projectName___
 > Updates a specific project.
 > 
 >> #### ___--force / -f (only with --update)___
 >> (be careful) Re-run all files in all folders. 
 
-> ### ___--testconnection projectName / -tc projectName___
+> ### ___tc -n projectName___
 > Test the connection with the server/database.
 
-> ### ___--rename id / -r id___
+> ### ___r -i id -n projectName___
 > Rename the selected project. (ID can be viewed in --showall)
 
-> ### ___--replace projectName --replace newProjectLocation / -rp projectName -rp newProjectLocation___
+> ### ___rp -n projectName -w newProjectLocation___
 > Changes in the internal db map to the project folder. (THIS DOES NOT REPLACE FILES OR FOLDERS)
 
-> ### ___--delete projectName / -del projectName___
+> ### ___d -n projectName___
 > Delete in the internal db map the project. (THIS DOES NOT DELETE FILES OR FOLDERS)
 
 
