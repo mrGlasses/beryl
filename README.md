@@ -10,7 +10,7 @@ Keep it simple, keep it pretty.
 
 ## Installation
 1. Obviously install Go if you don't
-2. ~~Because of damned Oracle driver~~ Mainly you have to install GCC([Windows](https://code.visualstudio.com/docs/cpp/config-mingw) or Linux(apt-get install build-essential and sudo apt-get install pkg-config) then install [Oracle Instant Client and SDK](https://medium.com/@utranand/how-to-connect-golang-to-oracle-on-windows-64-bit-using-go-oci8-library-ab9ed0511b20) ([Alternative Link](https://web.archive.org/web/20230105062526/https://medium.com/@utranand/how-to-connect-golang-to-oracle-on-windows-64-bit-using-go-oci8-library-ab9ed0511b20)) - Yes, even it's in Thai, it's very useful, great job Puttipong Utranand
+2. ~~Because of damned Oracle driver~~ Mainly you have to install GCC([Windows](https://code.visualstudio.com/docs/cpp/config-mingw) or Linux(apt-get install build-essential and sudo apt-get install pkg-config) then install [Oracle Instant Client and SDK](https://medium.com/@utranand/how-to-connect-golang-to-oracle-on-windows-64-bit-using-go-oci8-library-ab9ed0511b20) ([Alternative Link](https://web.archive.org/web/20230105062526/https://medium.com/@utranand/how-to-connect-golang-to-oracle-on-windows-64-bit-using-go-oci8-library-ab9ed0511b20)) - Yes, even it's in Thai, it's very useful, great job Puttipong Utranand / For [Ubuntu](https://smalldata.tech/blog/2019/05/06/connecting-to-an-oracle-database-with-golang-on-ubuntu) ([Alternative Link](https://web.archive.org/web/20211016184113/https://smalldata.tech/blog/2019/05/06/connecting-to-an-oracle-database-with-golang-on-ubuntu))
 3. Clone the repository with git
 4. go to the main folder and 
 

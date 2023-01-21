@@ -131,7 +131,7 @@ func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]*File, [
 func GetLastID(projects []Project) int {
 
 	if len(projects) == 0 {
-		return 1
+		return 0
 	}
 
 	last := len(projects) - 1
