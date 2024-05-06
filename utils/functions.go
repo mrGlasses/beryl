@@ -71,7 +71,7 @@ func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]*File, [
 
 	// Get a list of all files in the root folder and its subfolders.
 	// folderSearch := startPath + string(os.PathSeparator) + "**" + string(os.PathSeparator) + "*.sql"
-	
+
 	// files, err := filepath.Glob(folderSearch)
 	// if err != nil {
 	// 	return nil, nil, err
@@ -79,10 +79,10 @@ func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]*File, [
 
 	// Get a list of all files in the root folder and its subfolders.
 	err := filepath.Walk(startPath, func(path string, info os.FileInfo, err error) error {
-        if err != nil {
-            return err
-        }
-        if !info.IsDir() && filepath.Ext(path) == ".sql" {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.ToLower(filepath.Ext(path)) == ".sql" {
 			fileItem := File{
 				FilePath:         path,
 				LastModification: info.ModTime().Format(time.RFC1123),
@@ -95,14 +95,13 @@ func ListFilesInFolder(startPath string, newPath bool, verbose bool) ([]*File, [
 				speak = append(speak, "File "+path+" added!")
 			}
 			list = append(list, &fileItem)
-        }
-        return nil
-    })
+		}
+		return nil
+	})
 
-    if err != nil {
-        return nil, nil, err
-    }
-
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// Iterate through the list of files and print their names.
 	// for _, file := range files {
@@ -272,7 +271,7 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 	// Select the connection
 	switch connection.DbsName {
 	case "mysql":
-		conString = connection.User + ":" + connection.Password + "@tcp(" + connection.Server + ":" + connection.Port + ")/" + connection.Database+ "?multiStatements=true"
+		conString = connection.User + ":" + connection.Password + "@tcp(" + connection.Server + ":" + connection.Port + ")/" + connection.Database + "?multiStatements=true"
 	case "ora":
 		conString = connection.User + "/" + connection.Password + "@" + connection.Server + ":" + connection.Port + "/" + connection.Database
 	case "mssql":
@@ -283,14 +282,14 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 
 	db, err := sql.Open(connection.DbsName, conString)
 	if err != nil {
-		return nil, fmt.Errorf(filePath+ ": "+ err.Error())
+		return nil, fmt.Errorf(filePath + ": " + err.Error())
 	}
 	defer db.Close()
 
 	// Read the SQL file into a slice of bytes
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf(filePath+ ": "+ err.Error())
+		return nil, fmt.Errorf(filePath + ": " + err.Error())
 	}
 
 	if verbose {
@@ -309,7 +308,7 @@ func SendCodeToDatabase(filePath string, extVar []ExternalVariables, connection 
 	// Execute the commands in the SQL file
 	_, err = db.Exec(string(data))
 	if err != nil {
-		return nil, fmt.Errorf(filePath+ ": "+ err.Error())
+		return nil, fmt.Errorf(filePath + ": " + err.Error())
 	}
 	result = append(result, "File "+filePath+" was executed successfully!")
 	return result, nil
